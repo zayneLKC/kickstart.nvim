@@ -136,6 +136,21 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- remove trailing whitespace on save.
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  callback = function()
+    -- Save cursor position
+    local save_cursor = vim.api.nvim_win_get_cursor(0)
+
+    -- Remove trailing whitespace
+    vim.cmd [[%s/\s\+$//e]]
+
+    -- Restore cursor position
+    vim.api.nvim_win_set_cursor(0, save_cursor)
+  end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -394,6 +409,20 @@ require('lazy').setup({
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
+
+      -- Handle how LSP messages are displayed.
+      vim.diagnostic.config {
+        float = {
+          wrap = true, -- Wrap long messages
+          --   max_width = 80, -- Width to wrap on
+          border = 'rounded', -- Optional: better visuals
+        },
+        virtual_lines = {
+          wrap = true,
+        },
+        severity_sort = true, -- Optional: sort messages by severity
+      }
+
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -501,10 +530,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
         -- pyright = {},
-        -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -513,7 +539,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
-
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -525,6 +550,22 @@ require('lazy').setup({
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
+            },
+          },
+        },
+        r_language_server = {},
+        texlab = {
+          settings = {
+            texlab = {
+              build = {
+                executable = 'latexmk',
+                args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
+                onSave = true,
+              },
+              forwardSearch = {
+                executable = 'skim',
+                args = { '--synctex-forward', '%l:1:%f', '%p' },
+              },
             },
           },
         },
@@ -589,6 +630,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        r = { 'styler' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -787,7 +829,21 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'latex' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'latex',
+        'r',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
