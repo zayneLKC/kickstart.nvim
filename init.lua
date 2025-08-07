@@ -370,7 +370,7 @@ require('lazy').setup({
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim', -- auto-update LSPs.
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -553,7 +553,10 @@ require('lazy').setup({
             },
           },
         },
-        r_language_server = {},
+        r_language_server = {
+          cmd = { 'R', '--no-echo', '-e', 'languageserver::run()' },
+          filetypes = { 'r', 'rmd', 'quarto' },
+        },
         texlab = {
           settings = {
             texlab = {
