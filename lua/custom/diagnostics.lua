@@ -32,3 +32,19 @@ vim.lsp.handlers['textDocument/publishDiagnostics'] = function(err, result, ctx,
   orig_handler(err, result, ctx, config)
 end
 -- #endregion
+--
+-- #region options
+vim.diagnostic.config {
+  float = {
+    -- wrap = true, -- Wrap long messages
+    -- max_width = 80, -- Width to wrap on
+    border = 'rounded', -- Optional: better visuals
+  },
+  virtual_lines = { -- Diagnostics on another line
+    wrap = true,
+    -- current_line = true -- Only show diagnostics on current line
+  },
+  severity_sort = true, -- Optional: sort messages by severity
+  underline = true, -- Show diagnostics below current line
+}
+-- #endregion

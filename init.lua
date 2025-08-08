@@ -408,26 +408,10 @@ require('lazy').setup({
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
 
-      -- Handle how LSP messages are displayed.
-      vim.diagnostic.config {
-        float = {
-          -- wrap = true, -- Wrap long messages
-          -- max_width = 80, -- Width to wrap on
-          -- border = 'rounded', -- Optional: better visuals
-        },
-        virtual_lines = {
-          -- wrap = true,
-        },
-        severity_sort = true, -- Optional: sort messages by severity
-      }
-
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          -- NOTE: Remember that Lua is a real programming language, and as such it is possible
-          -- to define small helper and utility functions so you don't have to repeat yourself.
-          --
-          -- In this case, we create a function that lets us more easily define mappings specific
+          -- Create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
           local map = function(keys, func, desc)
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
@@ -547,14 +531,14 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
         r_language_server = {
           cmd = { 'R', '--no-echo', '-e', 'languageserver::run()' },
           filetypes = { 'r', 'rmd', 'quarto' },
-          capabilities = {
+          capabilities = { -- TODO: play with this.
             textDocument = {
               foldingRange = {
                 dynamicRegistration = false,
