@@ -92,6 +92,7 @@ vim.g.have_nerd_font = true
 
 require 'custom.options'
 require 'custom.keymaps'
+require 'custom.diagnostics'
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -104,9 +105,6 @@ require 'custom.keymaps'
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -413,12 +411,12 @@ require('lazy').setup({
       -- Handle how LSP messages are displayed.
       vim.diagnostic.config {
         float = {
-          wrap = true, -- Wrap long messages
-          --   max_width = 80, -- Width to wrap on
-          border = 'rounded', -- Optional: better visuals
+          -- wrap = true, -- Wrap long messages
+          -- max_width = 80, -- Width to wrap on
+          -- border = 'rounded', -- Optional: better visuals
         },
         virtual_lines = {
-          wrap = true,
+          -- wrap = true,
         },
         severity_sort = true, -- Optional: sort messages by severity
       }
@@ -556,6 +554,14 @@ require('lazy').setup({
         r_language_server = {
           cmd = { 'R', '--no-echo', '-e', 'languageserver::run()' },
           filetypes = { 'r', 'rmd', 'quarto' },
+          capabilities = {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+              },
+            },
+          },
         },
         texlab = {
           settings = {
