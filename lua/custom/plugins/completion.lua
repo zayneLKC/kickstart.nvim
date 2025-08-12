@@ -1,4 +1,5 @@
 -- lua/plugins/completion.lua
+-- TODO: Change everything to blink.cmp. Look at lines 780-850 of kickstart.nvim's init.lua.
 return {
   -- Main completion plugin
   {
