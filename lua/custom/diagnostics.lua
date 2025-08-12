@@ -40,6 +40,14 @@ vim.diagnostic.config {
   --     -- max_width = 80, -- Width to wrap on
   --     border = 'rounded', -- Optional: better visuals
   --   },
+  signs = vim.g.have_nerd_font and {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '󰅚 ',
+      [vim.diagnostic.severity.WARN] = '󰀪 ',
+      [vim.diagnostic.severity.INFO] = '󰋽 ',
+      [vim.diagnostic.severity.HINT] = '󰌶 ',
+    },
+  } or {},
   virtual_lines = { -- Diagnostics on another line
     --     wrap = true,
     current_line = true, -- Only show diagnostics on current line
