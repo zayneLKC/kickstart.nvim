@@ -197,12 +197,16 @@ return {
             texlab = {
               build = {
                 executable = 'latexmk',
-                args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
-                onSave = true,
+                args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-shell-escape', 'recorder', '%f' },
+                onSave = false, -- Let vimtex handle this.
+                forwardSearchAfter = false, -- Prevent automatic forward search
               },
               forwardSearch = {
-                executable = 'skim',
-                args = { '--synctex-forward', '%l:1:%f', '%p' },
+                executable = nil, -- Let vimtex handle this.
+              },
+              -- Optional: Help TexLab understand minted's generated files
+              experimental = {
+                followPackageLinks = true,
               },
             },
           },
